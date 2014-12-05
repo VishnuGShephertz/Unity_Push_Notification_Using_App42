@@ -37,10 +37,10 @@ public class App42Push : MonoBehaviour
 		#endif
 		return message;
 		}
-	private static void setNativeCallback (String gameObject)
+	private static void setNativeCallback ()
 	{
 		if (mInstance == null) {
-			GameObject receiverObject = new GameObject (gameObject);
+			GameObject receiverObject = new GameObject ("App42Push");
 			DontDestroyOnLoad (receiverObject);
 			mInstance = receiverObject.AddComponent<App42Push> ();
 		}
@@ -57,19 +57,10 @@ public class App42Push : MonoBehaviour
 		#endif
 		return null;
 	}
-	public static void setApp42PushListener (App42NativePushListener listener,String gameObjectName)
+	public static void setApp42PushListener (App42NativePushListener listener)
 	{
-		app42Listener = listener;
-		 setNativeCallback (gameObjectName);
-		#if UNITY_ANDROID
-		setAndroidGameObject(gameObjectName);
-		#endif
-		#if UNITY_IPHONE
-		setAppleGameObject(gameObjectName);
-		#endif
-		#if UNITY_WINDOWS
-		
-		#endif
+		  app42Listener = listener;
+		  setNativeCallback ();
 	}
 	
 	public void onPushNotificationsReceived (String message)
@@ -109,13 +100,6 @@ public void onErrorFromNative(string error)
 			jc.CallStatic("registerOnGCM", projectNo);
           }
         }
-		public static void setAndroidGameObject(string gameObject) {
-      if(Application.platform != RuntimePlatform.Android) return;
-      AndroidJNIHelper.debug = false; 
-		using (AndroidJavaClass jc = new AndroidJavaClass("com.shephertz.app42Push.App42UnityHelper")) { 
-			jc.CallStatic("setGameObject", gameObject);
-          }
-        }
 		public static string getLastAndroidMessage() {
 			if(Application.platform != RuntimePlatform.Android) return null;
 			AndroidJNIHelper.debug = false; 
@@ -126,11 +110,7 @@ public void onErrorFromNative(string error)
 	#endif
 
 	#if UNITY_IPHONE
-	
-	public static void setAppleGameObject(string gameObjectName) {
-		[System.Runtime.InteropServices.DllImport("__Internal")]
-	setListenerGameObject( gameObjectName);
-	}
+
 	public static void registerOnApple() {
 		[System.Runtime.InteropServices.DllImport("__Internal")]
 	 registerForRemoteNotifications();

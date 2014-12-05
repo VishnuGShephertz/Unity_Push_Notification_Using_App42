@@ -10,9 +10,9 @@ public class App42UnityHelper {
 
 	private final static  String KeyLastMessage = "lastMessage";
 	private final static  String AppName = "PushUnityNotification";
-	private final static  String GameObject="GameObject";
+	private final static  String GameObject="App42Push";
 	private final static String OnMessage="onPushNotificationsReceived";
-	private final static String OnRegistrationId="onDeviceToekenFromNative";
+	private final static String OnRegistrationId="onDeviceTokenFromNative";
 	private final static String OnGCMError="onErrorFromNative";
 
 	/*
@@ -37,33 +37,21 @@ public class App42UnityHelper {
 
 	public static void sendPushMessage(String message) {
 		saveLastMessage(message);
-		UnityPlayer.UnitySendMessage(getGameObjectName(), OnMessage, message);
+		UnityPlayer.UnitySendMessage(GameObject, OnMessage, message);
 		Log.i(" Message Sent : OnMessage", message);
 	}
 
-	public static void setGameObject(String gameObjectName){
-		SharedPreferences sharedPreference = UnityPlayer.currentActivity
-				.getSharedPreferences(AppName,
-						UnityPlayer.currentActivity.MODE_PRIVATE);
-		SharedPreferences.Editor prefEditor = sharedPreference.edit();
-		prefEditor.putString(GameObject, gameObjectName);
-		prefEditor.commit();
-	}
+	
 	public static void sendGCMRegId(String regId) {
-		UnityPlayer.UnitySendMessage(getGameObjectName(), OnRegistrationId, regId);
+		System.out.println("Sending RegIDDDDDDDDDDDDDDDDDDDD");
+		UnityPlayer.UnitySendMessage(GameObject, OnRegistrationId, regId);
 		Log.i(" Message Sent : OnRegistrationId", regId);
 	}
 	public static void sendGCMError(String error) {
-		UnityPlayer.UnitySendMessage(getGameObjectName(), OnGCMError, error);
+		UnityPlayer.UnitySendMessage(GameObject, OnGCMError, error);
 		Log.i(" GCM Error :", error);
 	}
-	private static String getGameObjectName() {
-		resetCount();
-		SharedPreferences sharedPreference = UnityPlayer.currentActivity
-				.getSharedPreferences(AppName,
-						UnityPlayer.currentActivity.MODE_PRIVATE);
-		return sharedPreference.getString(GameObject, "MainCamera");
-	}
+
 	public static String getLastMessage() {
 		resetCount();
 		SharedPreferences sharedPreference = UnityPlayer.currentActivity

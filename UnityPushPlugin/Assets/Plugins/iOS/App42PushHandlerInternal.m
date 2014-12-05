@@ -36,15 +36,8 @@ void registerForRemoteNotifications()
 
 
 
-char * listenerGameObject = 0;
-void setListenerGameObject(char * listenerName)
-{
-	free(listenerGameObject);
-    listenerGameObject = 0;
-	int len = strlen(listenerName);
-	listenerGameObject = malloc(len+1);
-	strcpy(listenerGameObject, listenerName);
-}
+char * listenerGameObject = "App42Push";
+
 
 
 
@@ -121,7 +114,7 @@ void app42RunTimeDidRegisterForRemoteNotificationsWithDeviceToken(id self, SEL _
                           stringByReplacingOccurrencesOfString: @" " withString: @""];
     NSLog(@"deviceToken=%@",deviceToken);
     const char * str = [deviceToken UTF8String];
-    UnitySendMessage(listenerGameObject, "onDeviceToekenFromNative", str);
+    UnitySendMessage(listenerGameObject, "onDeviceTokenFromNative", str);
 
 }
 

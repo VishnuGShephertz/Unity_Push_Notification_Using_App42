@@ -63,7 +63,7 @@ public class PushSample: MonoBehaviour, App42NativePushListener
 	public void onDeviceToken(String deviceToken){
 		String deviceType = App42Push.getDeviceType ();
 		if(deviceType!=null&&deviceToken!=null&& deviceToken.Length!=0)
-		App42API.BuildPushNotificationService().StoreDeviceToken(App42API.GetLoggedInUser(),regId,
+			App42API.BuildPushNotificationService().StoreDeviceToken(App42API.GetLoggedInUser(),deviceToken,
                                                     deviceType,new Callback());
    }
 	public void onMessage(String msg){

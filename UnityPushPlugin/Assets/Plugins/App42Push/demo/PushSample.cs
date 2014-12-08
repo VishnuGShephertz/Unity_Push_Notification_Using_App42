@@ -55,7 +55,7 @@ public class PushSample: MonoBehaviour, App42NativePushListener
 		App42API.Initialize(ApiKey,SecretKey);
 		App42API.SetLoggedInUser(UserId);
 		//Put Your Game Object Here
-		App42Push.setApp42PushListener (this,this.gameObject.name);
+		App42Push.setApp42PushListener (this);
 		App42Push.registerForPush (GoogleProjectNo);
 		
 	}

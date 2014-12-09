@@ -7,7 +7,9 @@ using System.Runtime.InteropServices;
 using System;
 using AssemblyCSharpfirstpass;
 using System.Runtime.InteropServices;
-
+#if UNITY_WP8
+using UnityPluginForWindowsPhone;
+#endif
 public class App42Push : MonoBehaviour
 {
 	private static App42Push mInstance = null;
@@ -20,20 +22,14 @@ public class App42Push : MonoBehaviour
 		#if UNITY_IPHONE
 		registerOnApple();
 		#endif
-		#if UNITY_WINDOWS
-		
+		#if UNITY_WP8
+		registerOnWindows();
 		#endif
 	}
 	public static string getLastPushMessage(){
 		string message = "";
 		#if UNITY_ANDROID
 		message=getLastAndroidMessage();
-		#endif
-		#if UNITY_IPHONE
-	
-		#endif
-		#if UNITY_WINDOWS
-		
 		#endif
 		return message;
 		}
@@ -53,7 +49,7 @@ public class App42Push : MonoBehaviour
 		return "IOS";
 		#endif
 		#if UNITY_WINDOWS
-		return "Windows";
+		return "WP7";
 		#endif
 		return null;
 	}
@@ -81,7 +77,7 @@ public void onErrorFromNative(string error)
 		}
 		}
 	}
-	public void onDeviceToekenFromNative (String deviceToken)
+	public void onDeviceTokenFromNative (String deviceToken)
 	{ 
 		Debug.Log (deviceToken);
 		if (app42Listener != null) {
@@ -117,21 +113,39 @@ public void onErrorFromNative(string error)
 	}
 	#endif
 
-	/* #if UNITY_WINDOWS
+	#if UNITY_WP8
 	public static void registerOnWindows(string userName) {
-		if(Application.platform != RuntimePlatform.Android) return null;
-		AndroidJNIHelper.debug = false; 
-		using (AndroidJavaClass jc = new AndroidJavaClass("com.shephertz.android.apphype.extensions.unity.UnityHelper")) { 
-			jc.CallStatic("intialize", apiKey, secretkey);
+	    App42PushService pushService = new App42PushService();
+		pushService.CreatePushChannel (Constants.UserId, PushChannelRegistrationCallback, PushChannelMessageCallback);
+	}
+	 void PushChannelRegistrationCallback(object msg,bool IsError)
+	{	
+		if(!IsError)
+		{
+			onDeviceTokenFromNative((string)msg);
+		}
+		else{
+		onErrorFromNative((string)msg);
 		}
 	}
-	public static string getLastWindowsMessage() {
-		if(Application.platform != RuntimePlatform.Android) return false;
-		AndroidJNIHelper.debug = false; 
-		using (AndroidJavaClass jc = new AndroidJavaClass("com.shephertz.android.apphype.extensions.unity.UnityHelper")) { 
-			return jc.CallStatic<string>("isAvailable",adCode);
+	void PushChannelMessageCallback(object sender,Dictionary<string,string> e)
+	{	
+		// Parse out the information that was part of the message.
+		StringBuilder msg = new StringBuilder();
+		foreach (string key in e.Keys)
+		{
+			msg.AppendFormat("{0}: {1}\n", key, e[key]);	
+		    //if (string.Compare(
+		    //   key,
+		    //  "wp:Param",
+		    //  System.Globalization.CultureInfo.InvariantCulture,
+		    //  System.Globalization.CompareOptions.IgnoreCase) == 0)
+		    //{
+		    //    relativeUri = e.Collection[key];
+		    //}
 		}
+		onPushNotificationsReceived(msg.ToString());
 	}
-	#endif */
+	#endif 
 }
 	

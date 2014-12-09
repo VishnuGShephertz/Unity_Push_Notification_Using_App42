@@ -23,7 +23,7 @@ public class PushSample: MonoBehaviour, App42NativePushListener
 	public const string SecretKey="f8fb6584ee2f9cc5b0d46d22cf696e32bd3988e064ae7760b0219e36f46357f3";
 	public const string GoogleProjectNo="1043599038916";
 	public const string UserId="sampi"; 
-
+    public const string W8ChannelName="App42Windows";
 	void OnGUI()
 	{
 		GUIStyle style=new GUIStyle();
@@ -37,7 +37,6 @@ public class PushSample: MonoBehaviour, App42NativePushListener
 		myMsg = GUI.TextField (new Rect (leftGap, viewHeight*6, viewWidth, viewHeight),myMsg);
 		//userName = GUI.TextField (new Rect (5, 150, 300, 30),userName);
 		//myMsg = GUI.TextField (new Rect (5, 190, 300, 40),myMsg);
-		
 		
 		if (GUI.Button(new Rect (leftGap, viewHeight*7, viewWidth, viewHeight), "Send Push To User"))
 		{
@@ -56,7 +55,16 @@ public class PushSample: MonoBehaviour, App42NativePushListener
 		App42API.SetLoggedInUser(UserId);
 		//Put Your Game Object Here
 		App42Push.setApp42PushListener (this);
+		#if UNITY_ANDROID
 		App42Push.registerForPush (GoogleProjectNo);
+		message=App42Push.getLastPushMessage();
+		#endif 
+		#if UNITY_IPHONE 
+		App42Push.registerForPush ("");
+		#endif 
+		#if UNITY_WP8 
+		App42Push.registerForPush(W8ChannelName);
+		#endif
 		
 	}
 

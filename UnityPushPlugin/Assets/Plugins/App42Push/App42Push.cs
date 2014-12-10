@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System;
+using System.Text;
 using AssemblyCSharpfirstpass;
 using System.Runtime.InteropServices;
 #if UNITY_WP8
@@ -23,7 +24,7 @@ public class App42Push : MonoBehaviour
 		registerOnApple();
 		#endif
 		#if UNITY_WP8
-		registerOnWindows();
+		registerOnWindows(projectNo);
 		#endif
 	}
 	public static string getLastPushMessage(){
@@ -59,7 +60,7 @@ public class App42Push : MonoBehaviour
 		  setNativeCallback ();
 	}
 	
-	public void onPushNotificationsReceived (String message)
+	public static void onPushNotificationsReceived (String message)
 	{ 
 		Debug.Log (message);
 		if (app42Listener != null) {
@@ -67,7 +68,7 @@ public class App42Push : MonoBehaviour
 
 		}
 	}
-public void onErrorFromNative(string error)
+public static void onErrorFromNative(string error)
 	{
 		Debug.Log(error);
 		if (app42Listener != null) {
@@ -77,7 +78,7 @@ public void onErrorFromNative(string error)
 		}
 		}
 	}
-	public void onDeviceTokenFromNative (String deviceToken)
+	public static void onDeviceTokenFromNative (String deviceToken)
 	{ 
 		Debug.Log (deviceToken);
 		if (app42Listener != null) {
@@ -118,7 +119,7 @@ public void onErrorFromNative(string error)
 	    App42PushService pushService = new App42PushService();
 		pushService.CreatePushChannel (Constants.UserId, PushChannelRegistrationCallback, PushChannelMessageCallback);
 	}
-	 void PushChannelRegistrationCallback(object msg,bool IsError)
+	public static void PushChannelRegistrationCallback(object msg,bool IsError)
 	{	
 		if(!IsError)
 		{
@@ -128,7 +129,7 @@ public void onErrorFromNative(string error)
 		onErrorFromNative((string)msg);
 		}
 	}
-	void PushChannelMessageCallback(object sender,Dictionary<string,string> e)
+	public static PushChannelMessageCallback(object sender,Dictionary<string,string> e)
 	{	
 		// Parse out the information that was part of the message.
 		StringBuilder msg = new StringBuilder();

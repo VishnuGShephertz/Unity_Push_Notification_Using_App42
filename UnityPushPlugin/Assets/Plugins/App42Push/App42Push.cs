@@ -8,86 +8,93 @@ using System;
 using System.Text;
 using AssemblyCSharpfirstpass;
 using System.Runtime.InteropServices;
+
 #if UNITY_WP8
 using UnityPluginForWindowsPhone;
 #endif
 public class App42Push : MonoBehaviour
 {
-	private static App42Push mInstance = null;
-	private static App42NativePushListener app42Listener;
-	public static void registerForPush (string projectNo)
-	{
-		#if UNITY_ANDROID
-		registerOnGCM(projectNo);
-		#endif
-		#if UNITY_IPHONE
-		registerOnApple();
-		#endif
-		#if UNITY_WP8
-		registerOnWindows(projectNo);
-		#endif
-	}
-	public static string getLastPushMessage(){
-		string message = "";
-		#if UNITY_ANDROID
-		message=getLastAndroidMessage();
-		#endif
-		return message;
-		}
-	private static void setNativeCallback ()
-	{
-		if (mInstance == null) {
-			GameObject receiverObject = new GameObject ("App42Push");
-			DontDestroyOnLoad (receiverObject);
-			mInstance = receiverObject.AddComponent<App42Push> ();
-		}
-	}
-	public static string getDeviceType(){
-		#if UNITY_ANDROID
-		return "Android";
-		#endif
-		#if UNITY_IPHONE
-		return "IOS";
-		#endif
-		#if UNITY_WINDOWS
-		return "WP7";
-		#endif
-		return null;
-	}
-	public static void setApp42PushListener (App42NativePushListener listener)
-	{
-		  app42Listener = listener;
-		  setNativeCallback ();
-	}
-	
-	public static void onPushNotificationsReceived (String message)
-	{ 
-		Debug.Log (message);
-		if (app42Listener != null) {
-			app42Listener.onMessage(message);
+		private static App42Push mInstance = null;
+		private static App42NativePushListener app42Listener;
 
-		}
-	}
-public static void onErrorFromNative(string error)
-	{
-		Debug.Log(error);
-		if (app42Listener != null) {
-		if (error != null && error.Length!=0) 
+		public static void registerForPush (string projectNo)
 		{
-			app42Listener.onError(error);
+				#if UNITY_ANDROID
+		registerOnGCM(projectNo);
+				#endif
+				#if UNITY_IPHONE
+		registerOnApple();
+				#endif
+				#if UNITY_WP8
+		registerOnWindows(projectNo);
+				#endif
 		}
-		}
-	}
-	public static void onDeviceTokenFromNative (String deviceToken)
-	{ 
-		Debug.Log (deviceToken);
-		if (app42Listener != null) {
-		if (deviceToken != null && deviceToken.Length!=0) 
+
+		public static string getLastPushMessage ()
 		{
-			app42Listener.onDeviceToken(deviceToken);
+				string message = "";
+				#if UNITY_ANDROID
+		message=getLastAndroidMessage();
+				#endif
+				return message;
 		}
+
+		private static void setNativeCallback ()
+		{
+				if (mInstance == null) {
+						GameObject receiverObject = new GameObject ("App42Push");
+						DontDestroyOnLoad (receiverObject);
+						mInstance = receiverObject.AddComponent<App42Push> ();
+				}
 		}
-	}
+
+		public static string getDeviceType ()
+		{
+				#if UNITY_ANDROID
+		return "Android";
+				#endif
+				#if UNITY_IPHONE
+		return "IOS";
+				#endif
+				#if UNITY_WINDOWS
+		return "WP7";
+				#endif
+				return null;
+		}
+
+		public static void setApp42PushListener (App42NativePushListener listener)
+		{
+				app42Listener = listener;
+				setNativeCallback ();
+		}
+	
+		public  void onPushNotificationsReceived (String message)
+		{ 
+				Debug.Log (message);
+				if (app42Listener != null && message != null) {
+						app42Listener.onMessage (message);
+
+				}
+		}
+
+		public  void onErrorFromNative (string error)
+		{
+				Debug.Log (error);
+				if (app42Listener != null && error != null) {
+						app42Listener.onError (error);
+		
+				}
+		}
+
+		public  void onDeviceTokenFromNative (String deviceToken)
+		{ 
+				Debug.Log (deviceToken);
+				if (app42Listener != null) {
+						if (deviceToken != null && deviceToken.Length != 0) {
+								app42Listener.onDeviceToken (deviceToken);
+						}
+				}
+		}
 
 #if UNITY_ANDROID
 		public static void registerOnGCM(string projectNo) {
@@ -119,14 +126,22 @@ public static void onErrorFromNative(string error)
 	    App42PushService pushService = new App42PushService();
 		pushService.CreatePushChannel (Constants.UserId, PushChannelRegistrationCallback, PushChannelMessageCallback);
 	}
-	public static void PushChannelRegistrationCallback(object msg,bool IsError)
-	{	
+	public static void PushChannelRegistrationCallback(object tokenUri,bool IsError)
+	{	string deviceToken=(string)tokenUri;
+		Debug.Log (deviceToken);
 		if(!IsError)
 		{
-			onDeviceTokenFromNative((string)msg);
+			if (app42Listener != null) {
+				if (deviceToken != null && deviceToken.Length != 0) {
+					app42Listener.onDeviceToken (deviceToken);
+				}
+			}
 		}
 		else{
-		onErrorFromNative((string)msg);
+			if (app42Listener != null && deviceToken != null) {
+				app42Listener.onError (deviceToken);
+				
+			}
 		}
 	}
 	public static PushChannelMessageCallback(object sender,Dictionary<string,string> e)
@@ -145,7 +160,11 @@ public static void onErrorFromNative(string error)
 		    //    relativeUri = e.Collection[key];
 		    //}
 		}
-		onPushNotificationsReceived(msg.ToString());
+		Debug.Log (msg.ToString());
+		if (app42Listener != null) {
+			app42Listener.onMessage(msg.ToString());
+			
+		}
 	}
 	#endif 
 }

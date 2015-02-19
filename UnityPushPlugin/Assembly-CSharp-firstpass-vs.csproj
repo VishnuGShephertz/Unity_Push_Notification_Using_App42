@@ -52,7 +52,10 @@
      <Compile Include="Assets\Plugins\App42Push\demo\PushSample.cs" />
      <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
  <Reference Include="App42_Unity3D_SDK_1.9">
- <HintPath>E:/unity/UnityPushPlugin/Assets/Plugins/App42Push/App42_Unity3D_SDK_1.9.dll</HintPath>
+ <HintPath>E:/unity/Unity_Push_Notification_Using_App42/UnityPushPlugin/Assets/Plugins/App42Push/App42_Unity3D_SDK_1.9.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityPluginForWindowsPhone">
+ <HintPath>E:/unity/Unity_Push_Notification_Using_App42/UnityPushPlugin/Assets/Plugins/App42Push/UnityPluginForWindowsPhone.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

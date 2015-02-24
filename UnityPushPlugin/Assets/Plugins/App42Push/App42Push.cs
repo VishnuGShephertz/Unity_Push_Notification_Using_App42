@@ -56,10 +56,7 @@ public class App42Push : MonoBehaviour
 				#if UNITY_IPHONE
 		return "IOS";
 				#endif
-				#if UNITY_WINDOWS
-		return "WP7";
-				#endif
-				return null;
+
 		}
 
 		public static void setApp42PushListener (App42NativePushListener listener)
@@ -100,14 +97,14 @@ public class App42Push : MonoBehaviour
 		public static void registerOnGCM(string projectNo) {
       if(Application.platform != RuntimePlatform.Android) return;
       AndroidJNIHelper.debug = false; 
-		using (AndroidJavaClass jc = new AndroidJavaClass("com.shephertz.app42Push.App42UnityHelper")) { 
+		using (AndroidJavaClass jc = new AndroidJavaClass("com.shephertz.app42.push.plugin.App42UnityHelper")) { 
 			jc.CallStatic("registerOnGCM", projectNo);
           }
         }
 		public static string getLastAndroidMessage() {
 			if(Application.platform != RuntimePlatform.Android) return null;
 			AndroidJNIHelper.debug = false; 
-		using (AndroidJavaClass jc = new AndroidJavaClass("com.shephertz.app42Push.App42UnityHelper")) { 
+		using (AndroidJavaClass jc = new AndroidJavaClass("com.shephertz.app42.push.plugin.App42UnityHelper")) { 
 			return jc.CallStatic<string>("getLastMessage");
 			}
 	}

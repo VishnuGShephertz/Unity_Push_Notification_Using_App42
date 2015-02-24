@@ -36,7 +36,7 @@
     </activity>
        
         <receiver
-            android:name="com.shephertz.app42Push.App42GCMReceiver"
+            android:name="com.shephertz.app42.push.plugin.App42GCMReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
 
@@ -58,10 +58,13 @@
           application uses a custom BroadcastReceiver that redefines its name.
 
         -->
-       <service android:name="com.shephertz.app42Push.App42GCMService" >
+       <service android:name="com.shephertz.app42.push.plugin.App42GCMService" >
 	    <!-- Defined Activity when Meesage is opened-->
         </service>
 		  <meta-data android:name="push_title" android:value="App42PushUnity"/>
+		   <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="6587000" />
     </application>
 
 </manifest>

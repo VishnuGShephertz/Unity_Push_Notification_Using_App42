@@ -22,8 +22,8 @@ public class PushSample: MonoBehaviour, App42NativePushListener
 	public const string ApiKey ="e86da38e4f4363bcbce74c431ca10173bf452e47285893e8d2044bb3913b7153";
 	public const string SecretKey="f8fb6584ee2f9cc5b0d46d22cf696e32bd3988e064ae7760b0219e36f46357f3";
 	public const string GoogleProjectNo="1043599038916";
-	public const string UserId="sampi"; 
-    public const string W8ChannelName="App42Windows";
+	public const string UserId="UnitySample"; 
+   
 	void OnGUI()
 	{
 		GUIStyle style=new GUIStyle();
@@ -62,10 +62,7 @@ public class PushSample: MonoBehaviour, App42NativePushListener
 		#if UNITY_IPHONE 
 		App42Push.registerForPush ("");
 		#endif 
-		#if UNITY_WP8 
-		App42Push.registerForPush(W8ChannelName);
-		#endif
-		
+	
 	}
 
 	public void onDeviceToken(String deviceToken){

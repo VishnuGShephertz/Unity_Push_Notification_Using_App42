@@ -58,14 +58,14 @@ public class App42GCMService extends IntentService {
 			if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR
 					.equals(messageType)) {
 				///sendNotification("Send error: " + extras.toString());
-				App42UnityHelper.sendGCMError(extras.toString());
+				//App42UnityHelper.sendGCMError(extras.toString());
+				Log.e("Send error:", extras.toString());
 			
 			} else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED
 					.equals(messageType)) {
-//				sendNotification("Deleted messages on server: "
+				Log.e("Deleted messages on GCM server:", extras.toString());
+//				App42UnityHelper.sendGCMError("Deleted messages on server: "
 //						+ extras.toString());
-				App42UnityHelper.sendGCMError("Deleted messages on server: "
-						+ extras.toString());
 				// If it's a regular GCM message, do some work.
 			} else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE
 					.equals(messageType)) {

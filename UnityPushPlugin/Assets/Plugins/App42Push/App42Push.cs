@@ -7,11 +7,8 @@ using System.Runtime.InteropServices;
 using System;
 using System.Text;
 using AssemblyCSharpfirstpass;
-using System.Runtime.InteropServices;
 
-#if UNITY_WP8
-using UnityPluginForWindowsPhone;
-#endif
+
 public class App42Push : MonoBehaviour
 {
 		private static App42Push mInstance = null;
@@ -25,9 +22,7 @@ public class App42Push : MonoBehaviour
 				#if UNITY_IPHONE
 		registerOnApple();
 				#endif
-				#if UNITY_WP8
-		registerOnWindows(projectNo);
-				#endif
+			
 		}
 
 		public static string getLastPushMessage ()
@@ -118,51 +113,5 @@ public class App42Push : MonoBehaviour
 	}
 	#endif
 
-	#if UNITY_WP8
-	public static void registerOnWindows(string userName) {
-	    App42PushService pushService = new App42PushService();
-		pushService.CreatePushChannel (Constants.UserId, PushChannelRegistrationCallback, PushChannelMessageCallback);
-	}
-	public static void PushChannelRegistrationCallback(object tokenUri,bool IsError)
-	{	string deviceToken=(string)tokenUri;
-		Debug.Log (deviceToken);
-		if(!IsError)
-		{
-			if (app42Listener != null) {
-				if (deviceToken != null && deviceToken.Length != 0) {
-					app42Listener.onDeviceToken (deviceToken);
-				}
-			}
-		}
-		else{
-			if (app42Listener != null && deviceToken != null) {
-				app42Listener.onError (deviceToken);
-				
-			}
-		}
-	}
-	public static PushChannelMessageCallback(object sender,Dictionary<string,string> e)
-	{	
-		// Parse out the information that was part of the message.
-		StringBuilder msg = new StringBuilder();
-		foreach (string key in e.Keys)
-		{
-			msg.AppendFormat("{0}: {1}\n", key, e[key]);	
-		    //if (string.Compare(
-		    //   key,
-		    //  "wp:Param",
-		    //  System.Globalization.CultureInfo.InvariantCulture,
-		    //  System.Globalization.CompareOptions.IgnoreCase) == 0)
-		    //{
-		    //    relativeUri = e.Collection[key];
-		    //}
-		}
-		Debug.Log (msg.ToString());
-		if (app42Listener != null) {
-			app42Listener.onMessage(msg.ToString());
-			
-		}
-	}
-	#endif 
 }
 	

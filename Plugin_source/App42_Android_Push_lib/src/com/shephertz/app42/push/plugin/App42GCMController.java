@@ -80,7 +80,7 @@ public class App42GCMController {
 		return context.getSharedPreferences(PrefKey, Context.MODE_PRIVATE);
 	}
 
-	/**
+	/** Returns Application verison
 	 * @param context
 	 * @return
 	 */
@@ -95,7 +95,7 @@ public class App42GCMController {
 		}
 	}
 
-	/**
+	/** Store registration Id provided by GCM
 	 * @param context
 	 * @param regId
 	 */
@@ -116,17 +116,13 @@ public class App42GCMController {
 	public static boolean isApp42Registerd(Context context){
 		return getGCMPreferences(context).getBoolean(KeyRegisteredOnApp42, false);
 	}
-	/**
-	 * @param context
-	 * @param regId
-	 */
-	public static void storeApp42Success(Context context) {
-		final SharedPreferences prefs = getGCMPreferences(context);
-		SharedPreferences.Editor editor = prefs.edit();
-		editor.putBoolean(KeyRegisteredOnApp42, true);
-		editor.commit();
-	}
+	
 
+	/** Returns registration ID If exist
+	 * @param context
+	 * @param googleProjectNo
+	 * @param callBack
+	 */
 	@SuppressLint("NewApi")
 	public static void getRegistrationId(Context context,
 			String googleProjectNo, App42GCMListener callBack) {
@@ -161,13 +157,12 @@ public class App42GCMController {
 		}.start();
 	}
 
+	/** CallBack Listener
+	 * @author Vishnu
+	 *
+	 */
 	public interface App42GCMListener {
 		public void onError(String errorMsg);
 		public void onGCMRegistrationId(String gcmRegId);
-		
-
 	}
-	
-	
-
 }

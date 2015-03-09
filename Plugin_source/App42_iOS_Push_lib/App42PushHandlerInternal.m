@@ -12,7 +12,7 @@
 
 void registerForRemoteNotifications()
 {
-	//[[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+	
     UIApplication *application = [UIApplication sharedApplication];
     // Register for Push Notitications, if running on iOS 8
     if ([application respondsToSelector:@selector(registerUserNotificationSettings:)])
@@ -37,7 +37,7 @@ void registerForRemoteNotifications()
 
 
 char * listenerGameObject = 0;
-void setGameObjectName(char * listenerName)
+void setListener(char * listenerName)
 {
 	free(listenerGameObject);
     listenerGameObject = 0;
@@ -54,9 +54,6 @@ void setGameObjectName(char * listenerName)
 {
     NSLog(@"%s",__FUNCTION__);
     method_exchangeImplementations(class_getInstanceMethod(self, @selector(setDelegate:)), class_getInstanceMethod(self, @selector(setApp42Delegate:)));
-	
-	UIApplication *app = [UIApplication sharedApplication];
-	NSLog(@"Initializing application: %@, %@", app, app.delegate);
 }
 
 BOOL app42RunTimeDidFinishLaunching(id self, SEL _cmd, id application, id launchOptions)
@@ -72,26 +69,6 @@ BOOL app42RunTimeDidFinishLaunching(id self, SEL _cmd, id application, id launch
 		[self applicationDidFinishLaunching:application];
 		result = YES;
 	}
-	
-    // Register for Push Notitications, if running on iOS 8
-    % if ([application respondsToSelector:@selector(registerUserNotificationSettings:)])
-    % {
-        % UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
-                                                        % UIUserNotificationTypeBadge |
-                                                        % UIUserNotificationTypeSound);
-        % UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
-                                                                                 % categories:nil];
-        % [application registerUserNotificationSettings:settings];
-        % [application registerForRemoteNotifications];
-    % }
-    % else
-    % {
-        % // Register for Push Notifications, if running iOS version < 8
-        % [application registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
-                                                         % UIRemoteNotificationTypeAlert |
-                                                         % UIRemoteNotificationTypeSound)];
-    % }
-	//[[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 	
 	return result;
 }
@@ -121,7 +98,7 @@ void app42RunTimeDidRegisterForRemoteNotificationsWithDeviceToken(id self, SEL _
                           stringByReplacingOccurrencesOfString: @" " withString: @""];
     NSLog(@"deviceToken=%@",deviceToken);
     const char * str = [deviceToken UTF8String];
-    UnitySendMessage(listenerGameObject, "onDeviceToekenFromNative", str);
+    UnitySendMessage(listenerGameObject, "onDidRegisterForRemoteNotificationsFromNative", str);
 
 }
 
@@ -133,7 +110,7 @@ void app42RunTimeDidFailToRegisterForRemoteNotificationsWithError(id self, SEL _
 	}
 	NSString *errorString = [error description];
     const char * str = [errorString UTF8String];
-    UnitySendMessage(listenerGameObject, "onRegistrationError", str);
+    UnitySendMessage(listenerGameObject, "onDidFailToRegisterForRemoteNotificationFromNative", str);
 	NSLog(@"Error registering for push notifications. Error: %@", error);
 }
 

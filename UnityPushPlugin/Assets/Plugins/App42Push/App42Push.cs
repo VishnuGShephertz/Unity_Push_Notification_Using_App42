@@ -1,4 +1,8 @@
-
+/**
+ * -----------------------------------------------------------------------
+ *     Copyright © 2015 ShepHertz Technologies Pvt Ltd. All rights reserved.
+ * -----------------------------------------------------------------------
+ */
 
 using UnityEngine;
 using System.Collections;
@@ -7,24 +11,37 @@ using System.Runtime.InteropServices;
 using System;
 using System.Text;
 using AssemblyCSharpfirstpass;
-
-
+/**
+ * @author Vishnu Garg
+ */
 public class App42Push : MonoBehaviour
 {
 		private static App42Push mInstance = null;
 		private static App42NativePushListener app42Listener;
 
-		public static void registerForPush (string projectNo)
+		#if UNITY_IPHONE
+		[System.Runtime.InteropServices.DllImport("__Internal")]
+		extern static public void registerForRemoteNotifications();
+		
+		[System.Runtime.InteropServices.DllImport("__Internal")]
+		extern static public void setListener(string listenerName);
+		#endif
+        /**
+        * Registration for Push Notification on GCM and APNs
+        */
+		public static void registerForPush (string projectNumber)
 		{
 				#if UNITY_ANDROID
-		registerOnGCM(projectNo);
+		registerOnGCM(projectNumber);
 				#endif
 				#if UNITY_IPHONE
-		registerOnApple();
+		registerForPushToAPNS();
 				#endif
 			
 		}
-
+        /**
+        * @return last save Pushmessage
+        */
 		public static string getLastPushMessage ()
 		{
 				string message = "";
@@ -33,34 +50,44 @@ public class App42Push : MonoBehaviour
 				#endif
 				return message;
 		}
-
-		private static void setNativeCallback ()
+       /**
+        * Set CallBack GameObject on which get callback from native
+        */
+	private static void setNativeCallbackListener ()
 		{
 				if (mInstance == null) {
 						GameObject receiverObject = new GameObject ("App42Push");
 						DontDestroyOnLoad (receiverObject);
 						mInstance = receiverObject.AddComponent<App42Push> ();
+						setListenerGameObject(receiverObject.name);
 				}
 		}
-
+        /**
+        * @return deviceType
+        */
 		public static string getDeviceType ()
 		{
+			string deviceType = null;
 				#if UNITY_ANDROID
-		return "Android";
+		        deviceType= "Android";
 				#endif
 				#if UNITY_IPHONE
-		return "IOS";
+		        deviceType= "IOS";
 				#endif
-
+		   return deviceType;
 		}
-
+        /**
+        * Set callback listener
+        */
 		public static void setApp42PushListener (App42NativePushListener listener)
 		{
 				app42Listener = listener;
-				setNativeCallback ();
+				setNativeCallbackListener ();
 		}
-	
-		public  void onPushNotificationsReceived (String message)
+	    /**
+        * Callback from native when Push Notification is being received
+        */
+		public void onPushNotificationsReceived (String message)
 		{ 
 				Debug.Log (message);
 				if (app42Listener != null && message != null) {
@@ -68,8 +95,10 @@ public class App42Push : MonoBehaviour
 
 				}
 		}
-
-		public  void onErrorFromNative (string error)
+        /**
+        * Callback from native when any error is being received
+        */
+		public void onErrorFromNative (string error)
 		{
 				Debug.Log (error);
 				if (app42Listener != null && error != null) {
@@ -77,8 +106,21 @@ public class App42Push : MonoBehaviour
 		
 				}
 		}
-
-		public  void onDeviceTokenFromNative (String deviceToken)
+        /**
+        * Callback from native when registration failed
+        */
+		public void onDidFailToRegisterForRemoteNotificationFromNative (string error)
+		{
+			Debug.Log (error);
+			if (app42Listener != null && error != null) {
+				app42Listener.onError (error);
+				
+			}
+		}
+	   /**
+        * Callback from native when registration Id received
+        */
+		public void onDidRegisterForRemoteNotificationsFromNative (String deviceToken)
 		{ 
 				Debug.Log (deviceToken);
 				if (app42Listener != null) {
@@ -88,7 +130,18 @@ public class App42Push : MonoBehaviour
 				}
 		}
 
-#if UNITY_ANDROID
+		public static void setListenerGameObject(String gameObjectName)
+		{
+		#if UNITY_ANDROID
+       setListener(gameObjectName);
+		#endif
+
+		#if UNITY_IPHONE
+		setListener(gameObjectName);
+		#endif
+		}
+
+	#if UNITY_ANDROID
 		public static void registerOnGCM(string projectNo) {
       if(Application.platform != RuntimePlatform.Android) return;
       AndroidJNIHelper.debug = false; 
@@ -97,18 +150,25 @@ public class App42Push : MonoBehaviour
           }
         }
 		public static string getLastAndroidMessage() {
-			if(Application.platform != RuntimePlatform.Android) return null;
+				if (Application.platform != RuntimePlatform.Android)
+						return null;
+				AndroidJNIHelper.debug = false; 
+				using (AndroidJavaClass jc = new AndroidJavaClass("com.shephertz.app42.push.plugin.App42UnityHelper")) { 
+						return jc.CallStatic<string> ("getLastMessage");
+				}
+		}
+		public static void setListener(string gameObjectName) {
+			if(Application.platform != RuntimePlatform.Android) return;
 			AndroidJNIHelper.debug = false; 
-		using (AndroidJavaClass jc = new AndroidJavaClass("com.shephertz.app42.push.plugin.App42UnityHelper")) { 
-			return jc.CallStatic<string>("getLastMessage");
+			using (AndroidJavaClass jc = new AndroidJavaClass("com.shephertz.app42.push.plugin.App42UnityHelper")) { 
+				jc.CallStatic("setListener", gameObjectName);
 			}
-	}
+        }
+
 	#endif
 
 	#if UNITY_IPHONE
-
-	public static void registerOnApple() {
-		[System.Runtime.InteropServices.DllImport("__Internal")]
+	public static void registerForPushToAPNS() {
 	 registerForRemoteNotifications();
 	}
 	#endif

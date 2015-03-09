@@ -19,10 +19,10 @@ public class PushSample: MonoBehaviour, App42NativePushListener
 	private string userName = "";
 	private string myMsg = "Hi I am using Push App42";
 	public string app42Response="";
-	public const string ApiKey ="e86da38e4f4363bcbce74c431ca10173bf452e47285893e8d2044bb3913b7153";
-	public const string SecretKey="f8fb6584ee2f9cc5b0d46d22cf696e32bd3988e064ae7760b0219e36f46357f3";
-	public const string GoogleProjectNo="1043599038916";
-	public const string UserId="UnitySample"; 
+	public const string ApiKey ="Your API Key";
+	public const string SecretKey="Your Secret Key";
+	public const string GoogleProjectNo="Your GoogleProject No";
+	public const string UserId="YourUserName"; 
    
 	void OnGUI()
 	{

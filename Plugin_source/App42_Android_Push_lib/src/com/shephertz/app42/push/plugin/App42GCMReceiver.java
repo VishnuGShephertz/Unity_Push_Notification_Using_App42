@@ -1,3 +1,8 @@
+/**
+ * -----------------------------------------------------------------------
+ *     Copyright © 2015 ShepHertz Technologies Pvt Ltd. All rights reserved.
+ * -----------------------------------------------------------------------
+ */
 package com.shephertz.app42.push.plugin;
 
 import android.app.Activity;
@@ -5,7 +10,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
-
+/**
+ * @author Vishnu Garg
+ */
 public class App42GCMReceiver  extends WakefulBroadcastReceiver {
 	
 	 /* (non-Javadoc)

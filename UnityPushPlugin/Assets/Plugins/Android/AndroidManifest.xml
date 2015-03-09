@@ -65,6 +65,9 @@
 		   <meta-data
             android:name="com.google.android.gms.version"
             android:value="6587000" />
+			<meta-data
+            android:name="onMessageOpen"
+            android:value="com.unity3d.player.UnityPlayerActivity" />
     </application>
 
 </manifest>

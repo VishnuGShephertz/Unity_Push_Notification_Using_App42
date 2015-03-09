@@ -54,8 +54,8 @@
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/unitySetup_install/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.1/UnityEngine.UI.dll</HintPath>
  </Reference>
- <Reference Include="App42_Unity3D_SDK_1.9">
- <HintPath>E:/unity/Unity_Push_Notification_Using_App42/UnityPushPlugin/Assets/Plugins/App42Push/App42_Unity3D_SDK_1.9.dll</HintPath>
+ <Reference Include="App42_Unity3D_SDK_2.3.1">
+ <HintPath>D:/WidgetLib/WidgetUnity/ShepHertz_Widget_Store/PushNotificationWidget/UnityPushPlugin/Assets/Plugins/App42Push/App42_Unity3D_SDK_2.3.1.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

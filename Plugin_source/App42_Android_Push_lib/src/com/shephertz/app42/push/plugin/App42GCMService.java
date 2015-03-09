@@ -1,3 +1,8 @@
+/**
+ * -----------------------------------------------------------------------
+ *     Copyright © 2015 ShepHertz Technologies Pvt Ltd. All rights reserved.
+ * -----------------------------------------------------------------------
+ */
 package com.shephertz.app42.push.plugin;
 
 import java.io.IOException;
@@ -11,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,7 +27,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.shephertz.app42.android.pushservice.R;
+
 
 /**
  * This {@code IntentService} does the actual handling of the GCM message.
@@ -29,14 +35,16 @@ import com.shephertz.app42.android.pushservice.R;
  * partial wake lock for this service while the service does its work. When the
  * service is finished, it calls {@code completeWakefulIntent()} to release the
  * wake lock.
+ * @author Vishnu Garg
  */
+
 public class App42GCMService extends IntentService {
-	public static final int NOTIFICATION_ID = 1;
-	public static final String EXTRA_MESSAGE = "message";
+	public static final int NotificationId = 1;
+	public static final String ExtraMessage = "message";
 	static int msgCount = 0;
 
 	public App42GCMService() {
-		super("GcmIntentService");
+		super("App42GCMService");
 	}
 
 	public static final String TAG = "App42 Push";
@@ -58,14 +66,13 @@ public class App42GCMService extends IntentService {
 			if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR
 					.equals(messageType)) {
 				///sendNotification("Send error: " + extras.toString());
-				//App42UnityHelper.sendGCMError(extras.toString());
+				App42UnityHelper.sendGCMError(extras.toString());
 				Log.e("Send error:", extras.toString());
 			
 			} else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED
 					.equals(messageType)) {
 				Log.e("Deleted messages on GCM server:", extras.toString());
-//				App42UnityHelper.sendGCMError("Deleted messages on server: "
-//						+ extras.toString());
+				App42UnityHelper.sendGCMError(extras.toString());
 				// If it's a regular GCM message, do some work.
 			} else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE
 					.equals(messageType)) {
@@ -104,8 +111,16 @@ public class App42GCMService extends IntentService {
 	 */
 	private void sendNotification(String message) {
 		
-		long when = System.currentTimeMillis();
-		Intent notificationIntent = new Intent();
+		long when = System.currentTimeMillis();;
+		Intent notificationIntent;
+		try {
+			notificationIntent = new Intent(this,
+					Class.forName(getActivityName()));
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			notificationIntent = new Intent();
+		}
 		NotificationManager notificationManager = (NotificationManager) this
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		// set intent so it does not start a new activity
@@ -116,7 +131,7 @@ public class App42GCMService extends IntentService {
 		Notification notification = new NotificationCompat.Builder(this)
 				.setContentTitle(getTitle()).setContentText(message)
 				.setContentIntent(intent)
-				.setSmallIcon(R.drawable.app_icon).setWhen(when)
+				.setSmallIcon(android.R.drawable.ic_dialog_info).setWhen(when)
 				.setNumber(++msgCount)
 				//.setLargeIcon(getBitmapFromAssets())
 				.setLights(Color.YELLOW, 1, 2).setAutoCancel(true).build();
@@ -125,7 +140,27 @@ public class App42GCMService extends IntentService {
 		notification.defaults |= Notification.DEFAULT_VIBRATE;
 		notificationManager.notify(0, notification);
 	}
+	
+	/**
+	 * @return
+	 */
+	private String getActivityName() {
+		ApplicationInfo ai;
+		try {
+			ai = this.getPackageManager().getApplicationInfo(
+					this.getPackageName(), PackageManager.GET_META_DATA);
+			Bundle aBundle = ai.metaData;
+			return aBundle.getString("onMessageOpen");
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
 
+	/**
+	 * @return Title From Android Manifest file
+	 */
 	private String getTitle() {
 		try {
 			ApplicationInfo ai = getPackageManager()
@@ -138,7 +173,6 @@ public class App42GCMService extends IntentService {
 			e.printStackTrace();
 			return "App42PushSample";
 		}
-
 	}
 	public Bitmap getBitmapFromAssets() {
 		AssetManager assetManager = getAssets();
@@ -154,7 +188,7 @@ public class App42GCMService extends IntentService {
 		}
 	}
 	/**
-     * 
+     * This message reset message count shown in Notification Bar
      */
 	public static void resetMsgCount() {
 		msgCount = 0;

@@ -31,15 +31,6 @@
          <meta-data
             android:name="com.google.android.gms.version"
             android:value="6587000" />
-         <activity
-            android:name="com.shephertz.app42.push.plugin.MainActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <receiver
             android:name="com.shephertz.app42.push.plugin.App42GCMReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
@@ -66,6 +57,9 @@
           application uses a custom BroadcastReceiver that redefines its name.
         -->
          <meta-data android:name="push_title" android:value="App42PushUnity"/>
+      	<meta-data
+            android:name="onMessageOpen"
+            android:value="com.unity3d.player.UnityPlayerActivity" />
         <service android:name="com.shephertz.app42.push.plugin.App42GCMService" >
         </service>
     </application>

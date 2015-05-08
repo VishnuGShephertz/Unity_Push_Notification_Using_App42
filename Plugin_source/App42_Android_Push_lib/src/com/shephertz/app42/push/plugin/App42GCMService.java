@@ -1,6 +1,6 @@
 /**
  * -----------------------------------------------------------------------
- *     Copyright © 2015 ShepHertz Technologies Pvt Ltd. All rights reserved.
+ *     Copyright Â© 2015 ShepHertz Technologies Pvt Ltd. All rights reserved.
  * -----------------------------------------------------------------------
  */
 package com.shephertz.app42.push.plugin;
@@ -94,7 +94,7 @@ public class App42GCMService extends IntentService {
 				try {
 					App42UnityHelper.sendPushMessage(message);
 				} catch (Throwable e) {
-					Log.e("App42 Exception", e.getMessage());
+				//	Log.e("App42 Exception", e.getMessage());
 				}
 				Log.i(TAG, "Received: " + extras.toString());
 			}
